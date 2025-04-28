@@ -1,60 +1,44 @@
 import { useState } from 'react';
-import { supabase } from '../utils/supabaseClient';
-import { useRouter } from 'next/router';
 
-export default function Login() {
+export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const router = useRouter();
 
-  const handleLogin = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setError(error.message);
-    } else {
-      if (data.user.user_metadata.role === 'admin') {
-        router.push('/admin-dashboard');
-      } else if (data.user.user_metadata.role === 'manager') {
-        router.push('/manager-dashboard');
-      } else {
-        router.push('/available-orders');
-      }
-    }
+    console.log('Login attempted:', { email, password });
+    // 🔥 Later we'll connect this to Supabase Auth
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-900">
-      <form onSubmit={handleLogin} className="bg-gray-800 p-8 rounded shadow-md w-96">
-        <h1 className="text-2xl font-bold text-white mb-6 text-center">Zest Portal Login</h1>
-
-        {error && <p className="text-red-400 mb-4">{error}</p>}
-
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full mb-4 p-2 rounded bg-gray-700 text-white"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full mb-6 p-2 rounded bg-gray-700 text-white"
-        />
-        <button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded">
-          Login
-        </button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <div className="bg-gray-800 p-8 rounded-2xl shadow-lg w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center text-white mb-6">Zest Portal Login</h1>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="email"
+            placeholder="E-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="px-4 py-2 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zest-500"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="px-4 py-2 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zest-500"
+            required
+          />
+          <button
+            type="submit"
+            className="bg-zest-500 hover:bg-zest-600 text-white font-bold py-2 rounded-md transition duration-200"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
